@@ -1,0 +1,10 @@
+# Directly run with docker-compose up, to start the test server
+version: "2"
+
+services:
+  web:
+    image: nginx
+    volumes:
+      - './src:/usr/share/nginx/html:ro'
+    ports:
+      - 8080:80

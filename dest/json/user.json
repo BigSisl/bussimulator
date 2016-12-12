@@ -1,0 +1,10 @@
+{
+  "active": {
+    "page": ".home",
+    "nav": "nav.home",
+    "breadcrumb": [
+      "home",
+      "page2"
+    ]
+  }
+}

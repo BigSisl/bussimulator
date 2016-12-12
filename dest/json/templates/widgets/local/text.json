@@ -1,0 +1,8 @@
+{
+  "widget": "local.texte",
+  "html": "text/content.htm",
+  "event": "increment",
+  "data": {
+    "counter": 12
+  }
+}
