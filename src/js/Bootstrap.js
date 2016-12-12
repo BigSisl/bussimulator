@@ -3,7 +3,9 @@
  */
 
 var StopClass = require('./simulator/Stops.js');
+var LineClass = require('./simulator/Lines.js');
 var StopEditor = require('./simulator/builder/StopsEditor.js');
+var LineEditor = require('./simulator/builder/LineEditor.js');
 var fabric = require("fabric-browserify").fabric;
 
 module.exports = (function(){
@@ -22,16 +24,23 @@ module.exports = (function(){
    */
   var stops = [];
 
+  /**
+   * Contains an array of lines.
+   * @type {Array}
+   */
+  var lines = []
+
   self.start = function() {
-    console.log('heyho');
+    // load
+    stops = StopEditor.load(canvas);
+    lines = LineEditor.load(canvas, stops);
+
     self.draw();
     // setup application / bootstrap application
   }
 
   self.draw = function() {
-    var stop = new StopClass();
 
-    stop.draw(canvas);
   }
 
   /**
@@ -39,16 +48,17 @@ module.exports = (function(){
    * @return {[type]} [description]
    */
   self.StopEditor = {
-    add: function() {
+    add:    function() {
       StopEditor.add(canvas, function(stop) {
         stops.push(stop);
         stop.draw(canvas);
       });
     },
-    stop: function() { StopEditor.stop(); },
-    edit: function() {
-      StopEditor.edit(canvas, stops);
-    }
+    stop:   function() { StopEditor.stop(); },
+    edit:   function() { StopEditor.edit(canvas, stops); },
+    remove: function() { StopEditor.remove(canvas, stops); },
+    list: function() { console.log(stops); },
+    load:   function() { console.log('reload page') }
   };
 
   /**
@@ -56,9 +66,24 @@ module.exports = (function(){
    * @type {Object}
    */
   self.LineEditor = {
-    connect: function() {
-      // enable connections
-    }
+    edit: function(line) {
+      console.log(lines, lines[line], 'lines[line]', typeof lines[line] === 'undefined');
+      if(typeof lines[line] === 'undefined') {
+        lines[line] = new LineClass({
+          name: line
+        });
+      }
+
+      lines[line].draw(canvas);
+      LineEditor.edit(lines[line], stops, canvas);
+    },
+    list: function() { console.log(lines); },
+    stop: function() { LineEditor.stop(); }
+  }
+
+  self.Save = function() {
+    LineEditor.save(lines);
+    StopEditor.save(stops);
   }
 
   return self;

@@ -6,15 +6,74 @@ var fabric = require('fabric-browserify').fabric;
 var jq = require('jquery');
 var Events = require('../../helper/Event.js')
 var StopClass = require('../Stops.js');
+var Save = require('./Save.js');
 
 var EditType = function(canvas, stops) {
   var self = {};
+  var oldConfig = {
 
-  console.log(canvas, stops, 'enable editing');
+  }; // contains old config to recreate from
+
+  /**
+   * Change status of object, depending on if edited
+   * @param  {[type]} edit true -> enable edit / -> false -> lock object
+   * @return {[type]}      [description]
+   */
+  function edit(edit, circle) {
+      circle.lockMovementX = !edit;
+      circle.lockMovementY = !edit;
+  }
+
+  (function() {
+    jq.each(stops, function(i, stop) {
+      edit(true, stop.getCircle());
+    });
+  })();
 
   self.remove = function() {
-    console.log('stop move command');
+    jq.each(stops, function(i, stop) {
+      // save current position to the stops
+      stop.update();
+      edit(false, stop.getCircle());
+    });
   };
+
+  return self;
+}
+
+var RemoveType = function(canvas, stops) {
+  var events = new Events(canvas);
+
+  (function(canvas){
+    events.add('object:selected', function(evt) {
+      // find and remove selected
+      console.log(evt);
+
+      // find object by comparing the position
+      var index = -1;
+      jq.each(stops, function(i, stop) {
+        if(evt.target === stop.getCircle()) {
+          stop.remove(canvas);
+          index = i;
+        }
+      });
+
+      if (index > -1) {
+        stops.splice(index, 1);
+      }
+
+      console.log(stops);
+    });
+  })(canvas);
+
+  /**
+   * Always called after this edit type is finished
+   * @return {[type]} [description]
+   */
+  self.remove = function() {
+    console.log('remove events');
+    events.removeAll();
+  }
 
   return self;
 }
@@ -55,13 +114,15 @@ var AddType = function(canvas, cb) {
 };
 
 module.exports = (function() {
+  const STORAGE_NAME = 'local.stops';
+
   var self = {};
 
   var active = null;
 
   self.Types = {
     ADD: AddType,
-    REMOVE: -1,
+    REMOVE: RemoveType,
     EDIT: EditType
   };
 
@@ -104,14 +165,40 @@ module.exports = (function() {
    * @return {[type]} [description]
    */
   self.save = function(stops) {
-    console.log('save stop');
+    self.stop();
+
+    var save = jq.map(stops, function(stop, i) {
+      return stop.getJSON();
+    });
+
+    Save.set(STORAGE_NAME, '[' + save.join(',') + ']');
   };
+
+  self.load = function(canvas) {
+    //TODO: removeAll
+    var stops = [];
+
+    jq.each(Save.get(STORAGE_NAME), function(i, config){
+      var stop = new StopClass(config);
+      stops.push(stop);
+      stop.draw(canvas);
+    });
+
+    console.log('stops: ', stops);
+    return stops;
+  }
+
+  self.remove = function(canvas, stops) {
+    self.stop();
+    active = new self.Types.REMOVE(canvas, stops);
+  }
 
   /**
    * Stop edit mode
    * @return {[type]} [description]
    */
   self.stop = function() {
+    console.log('stop edit');
     if(active && active.remove) {
       active.remove();
     }

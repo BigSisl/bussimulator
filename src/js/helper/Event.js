@@ -2,6 +2,7 @@
  * Simple event helper library, for removing events cleanly again
  * @param {[type]} canvas [description]
  */
+var fabric = require('fabric-browserify').fabric;
 var jq = require('jquery');
 
 module.exports = function(canvas) {
