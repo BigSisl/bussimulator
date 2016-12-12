@@ -43,11 +43,11 @@ module.exports = (function(){
       StopEditor.add(canvas, function(stop) {
         stops.push(stop);
         stop.draw(canvas);
-      })
+      });
     },
     stop: function() { StopEditor.stop(); },
     edit: function() {
-
+      StopEditor.edit(canvas, stops);
     }
   };
 

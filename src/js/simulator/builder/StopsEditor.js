@@ -7,13 +7,13 @@ var jq = require('jquery');
 var Events = require('../../helper/Event.js')
 var StopClass = require('../Stops.js');
 
-var MoveType = function(canvas, cb) {
+var EditType = function(canvas, stops) {
   var self = {};
 
+  console.log(canvas, stops, 'enable editing');
+
   self.remove = function() {
-    var canvas = fabric.Canvas.activeInstance;
-    console.log(canvas.__eventListeners);
-    canvas.__eventListeners["mouse:down"] = [];
+    console.log('stop move command');
   };
 
   return self;
@@ -62,7 +62,7 @@ module.exports = (function() {
   self.Types = {
     ADD: AddType,
     REMOVE: -1,
-    MOVE: 1
+    EDIT: EditType
   };
 
   /**
@@ -89,11 +89,22 @@ module.exports = (function() {
   };
 
   /**
+   * Enables editing
+   * @param  {[type]} canvas [description]
+   * @param  {[type]} stops  [description]
+   * @return {[type]}        [description]
+   */
+  self.edit = function(canvas, stops) {
+    self.stop();
+    active = new self.Types.EDIT(canvas, stops);
+  }
+
+  /**
    * Saves changes
    * @return {[type]} [description]
    */
   self.save = function(stops) {
-
+    console.log('save stop');
   };
 
   /**
