@@ -1,11 +1,19 @@
+/**
+ * Editor class, enables editing, of the stops
+ */
 
-var fabric
+var fabric = require('fabric-browserify').fabric;
+var jq = require('jquery');
+var Events = require('../../helper/Event.js')
+var StopClass = require('../Stops.js');
 
 var MoveType = function(canvas, cb) {
   var self = {};
 
   self.remove = function() {
-
+    var canvas = fabric.Canvas.activeInstance;
+    console.log(canvas.__eventListeners);
+    canvas.__eventListeners["mouse:down"] = [];
   };
 
   return self;
@@ -20,13 +28,18 @@ var MoveType = function(canvas, cb) {
 var AddType = function(canvas, cb) {
   var self = {};
 
+  var events = new Events(canvas);
+  var element = jq(canvas.wrapperEl);
+
   // prepare type -> smarter way to do this
   (function(canvas){
-    canvas.on('selection:cleared', function(evt) {
-      console.log('deselected', evt.target);
-    });
-    canvas.on('object:selected', function(evt) {
-      console.log('selected', evt);
+    events.add('mouse:down', function(evt) {
+      cb(new StopClass({
+        pos: {
+          top: evt.e.y - element.offset().top,
+          left: evt.e.x - element.offset().left
+        }
+      }));
     });
   })(canvas);
 
@@ -35,7 +48,7 @@ var AddType = function(canvas, cb) {
    * @return {[type]} [description]
    */
   self.remove = function() {
-    console.log('removed mode');
+    events.removeAll();
   }
 
   return self;
@@ -88,8 +101,8 @@ module.exports = (function() {
    * @return {[type]} [description]
    */
   self.stop = function() {
-    if(active && active.destroy) {
-      active.destroy();
+    if(active && active.remove) {
+      active.remove();
     }
   };
 

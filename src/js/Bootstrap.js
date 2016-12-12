@@ -41,13 +41,13 @@ module.exports = (function(){
   self.stopEditor = {
     add: function() {
       StopEditor.add(canvas, function(stop) {
-        // callback
-        console.log('added stop', stop);
+        stops.push(stop);
+        stop.draw(canvas);
       })
     },
     stop: function() { StopEditor.stop(); },
     edit: function() {
-      
+
     }
   };
 

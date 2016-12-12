@@ -7,3 +7,5 @@ var bootstrap = require('./js/Bootstrap.js');
 
 global.simulator = bootstrap;
 global.simulator.start();
+
+simulator.stopEditor.add();

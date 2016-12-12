@@ -19,16 +19,19 @@ module.exports = function(stop) {
     * @type {String}
     */
    name: '',
+
    /**
     * Extra information of the stop
     * @type {String}
     */
    description: '',
+
    /**
     * If it is a hub
     * @type {Boolean}
     */
    hub: false,
+
    /**
     * Information of the lines, which this stop is part of
     * @type {Array}
@@ -63,6 +66,10 @@ module.exports = function(stop) {
     });
   })();
 
+  self.getCircle = function() {
+    return Circle;
+  };
+
  /**
   * click handler for the
   * @return {[type]} [description]
@@ -74,7 +81,7 @@ module.exports = function(stop) {
  /**
   * Returns main data object as json
   */
- self.getJSON() {
+ self.getJSON = function() {
    return JSON.stringify(Stop);
  }
 
@@ -95,6 +102,10 @@ module.exports = function(stop) {
   */
  self.draw = function(canvas) {
    canvas.add(Circle);
+ }
+
+ self.remove = function(canvas) {
+   canvas.remove(Circle);
  }
 
  /**

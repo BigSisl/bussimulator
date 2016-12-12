@@ -7,15 +7,12 @@ module.exports = (function() {
    * Saving all changes
    * @return {[type]} [description]
    */
-  self.save = function(stops, lines) {
-    
+  self.save = function(key, obj) {
+
   }
 
-  self.load = function() {
-    return {
-      stops: [],
-      lines: []
-    }
+  self.load = function(key) {
+    return { }
   }
 
   return self;
