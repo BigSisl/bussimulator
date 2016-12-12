@@ -38,7 +38,7 @@ module.exports = (function(){
    * Activate editor in commandline
    * @return {[type]} [description]
    */
-  self.stopEditor = {
+  self.StopEditor = {
     add: function() {
       StopEditor.add(canvas, function(stop) {
         stops.push(stop);
@@ -51,6 +51,10 @@ module.exports = (function(){
     }
   };
 
+  /**
+   * Enables editing of buslines
+   * @type {Object}
+   */
   self.LineEditor = {
     connect: function() {
       // enable connections
