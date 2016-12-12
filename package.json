@@ -18,8 +18,11 @@
   "homepage": "https://github.com/BigSisl/genidash#readme",
   "devDependencies": {
     "cz-conventional-changelog": "^1.2.0",
+    "flow-bin": "^0.36.0",
     "gulp": "^3.9.1",
     "gulp-browserify": "^0.5.1",
+    "gulp-sequence": "^0.4.6",
+    "gulp-watch": "^4.3.11",
     "require-dir": "^0.3.1"
   },
   "config": {
@@ -33,6 +36,8 @@
   "private": true,
   "dependencies": {
     "connect": "^3.5.0",
+    "fabric-browserify": "^1.4.13",
+    "jquery": "^3.1.1",
     "serve-static": "^1.11.1",
     "vue": "^2.0.3"
   }

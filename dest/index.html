@@ -12,12 +12,6 @@
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="./css/main.css">
 
-    <!-- jQuery library -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-
-    <!-- Latest compiled JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
     <style type="text/css">
     body {
         padding-top: 50px;
@@ -49,91 +43,16 @@
         </div>
       </div>
 
-    <div class="container">
-
-      <section class="jumbotron" data-section-ID >
-        <h1>Welcome to Genidash</h1>
-        <p>
-          Genidash is a webapplication, which should support you by creating
-          a webpage genericaly using a simple config file
-        </p>
-      </section>
-
-      <section class="jumbotron">
-        <h2>This section will contain many informations on how it is used</h2>
-      </section>
-
-      <section class="jumbotron">
-        <h2>Here is some space for an awesome canvas animation.</h2>
-      </section>
-
-
-      <section class="jumbotron">
-        <h2>Contact me</h2>
-        <form class="form-horizontal">
-        <fieldset>
-
-        <!-- Form Name -->
-        <legend>Form Name</legend>
-
-        <!-- Text input-->
-        <div class="form-group">
-          <label class="col-md-4 control-label" for="textinput">Name</label>
-          <div class="col-md-4">
-          <input id="textinput" name="textinput" type="text" placeholder="" class="form-control input-md" required="">
-
-          </div>
-        </div>
-
-        <!-- Text input-->
-        <div class="form-group">
-          <label class="col-md-4 control-label" for="textinput">Lastname</label>
-          <div class="col-md-4">
-          <input id="textinput" name="textinput" type="text" placeholder="" class="form-control input-md">
-
-          </div>
-        </div>
-
-        <!-- Prepended text-->
-        <div class="form-group">
-          <label class="col-md-4 control-label" for="prependedtext">EMail</label>
-          <div class="col-md-4">
-            <div class="input-group">
-              <span class="input-group-addon">@</span>
-              <input id="prependedtext" name="prependedtext" class="form-control" placeholder="" type="text">
-            </div>
-
-          </div>
-        </div>
-
-        <!-- Textarea -->
-        <div class="form-group">
-          <label class="col-md-4 control-label" for="textarea">Content</label>
-          <div class="col-md-4">
-            <textarea class="form-control" id="textarea" name="textarea">Some awesome content message</textarea>
-          </div>
-        </div>
-
-        <!-- Button -->
-        <div class="form-group">
-          <label class="col-md-4 control-label" for="singlebutton"></label>
-          <div class="col-md-4">
-            <button id="singlebutton" name="singlebutton" class="btn btn-success">Send</button>
-          </div>
-        </div>
-
-        </fieldset>
-        </form>
-
-      </section>
-
-    </div>
+    <canvas id="canvas-simulator" width="700" height="700"></canvas>
 
     <footer class="footer">
       <div class="container">
-        <p class="text-muted">>My personal &copyright; Lucien Zürcher ;), but still love MIT</p>
+        <p class="text-muted">PTA - simulator Prototype</p>
       </div>
     </footer>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="app.js"></script>
 
   </body>
 </html>
