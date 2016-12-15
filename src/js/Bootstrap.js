@@ -6,7 +6,11 @@ var StopClass = require('./simulator/Stops.js');
 var LineClass = require('./simulator/Lines.js');
 var StopEditor = require('./simulator/builder/StopsEditor.js');
 var LineEditor = require('./simulator/builder/LineEditor.js');
+var Simulator = require('./simulator/simulator.js');
 var fabric = require("fabric-browserify").fabric;
+var GUI = require("./simulator/Gui.js");
+
+var $ = require('jquery');
 
 module.exports = (function(){
 
@@ -30,17 +34,33 @@ module.exports = (function(){
    */
   var lines = []
 
+  /**
+   * Reference to the actual simulator
+   * @type {[type]}
+   */
+  var simulator = null;
+
+  /**
+   * Reference to the gui class
+   * @type {[type]}
+   */
+  var gui = null;
+
   self.start = function() {
     // load
     stops = StopEditor.load(canvas);
     lines = LineEditor.load(canvas, stops);
+
+    gui = global.gui = new GUI(canvas);
+
+    simulator = new Simulator(stops, lines)
 
     self.draw();
     // setup application / bootstrap application
   }
 
   self.draw = function() {
-
+    gui.drawLegend(lines);
   }
 
   /**
@@ -57,7 +77,7 @@ module.exports = (function(){
     stop:   function() { StopEditor.stop(); },
     edit:   function() { StopEditor.edit(canvas, stops); },
     remove: function() { StopEditor.remove(canvas, stops); },
-    list: function() { console.log(stops); },
+    list: function() { return stops; },
     load:   function() { console.log('reload page') }
   };
 
@@ -77,8 +97,22 @@ module.exports = (function(){
       lines[line].draw(canvas);
       LineEditor.edit(lines[line], stops, canvas);
     },
-    list: function() { console.log(lines); },
+    list: function() { return lines; },
     stop: function() { LineEditor.stop(); }
+  }
+
+  self.Calc = function(stop1, stop2) {
+
+    // TMP
+    var start = stops[stop1];
+    var end = stops[stop2];
+
+    var result = simulator.getPath(start, end);
+
+    console.log('POS: ', start.getId(), '');
+    $.each(result, function(i, el) {
+      console.log('POS: ', el.stop.getId(), el.line.getId());
+    });
   }
 
   self.Save = function() {

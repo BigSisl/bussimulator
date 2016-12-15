@@ -47,7 +47,7 @@ module.exports = function(config, stops) {
     var string = 'M';
 
     string += jq.map(Stops, function(stop) {
-      return stop.getCircle().left + ' ' +stop.getCircle().top;
+      return stop ? stop.getCircle().left + ' ' +stop.getCircle().top : '';
     }).join('L');
 
     return string;
@@ -72,7 +72,7 @@ module.exports = function(config, stops) {
       fill: '',
       stroke: Line.color,
       strokeWidth: 5 ,
-      opacity: 0.8,
+      opacity: 0.4,
       selectable: true
     });
 
@@ -83,6 +83,17 @@ module.exports = function(config, stops) {
   self.getId = function() {
     return Line.name;
   };
+
+  self.active = function(active) {
+    path.set({
+      opacity: active ? 1 : 0.4
+    });
+    return active;
+  }
+
+  self.getColor = function() {
+    return Line.color;
+  }
 
   self.getPath = function() {
     return path;
@@ -105,6 +116,9 @@ module.exports = function(config, stops) {
     }
   };
 
+  self.getStops = function() {
+    return Stops;
+  };
 
   // actual constructor
   (function() {
@@ -116,6 +130,10 @@ module.exports = function(config, stops) {
         stop.addLine(self);
       }
     });
+
+    // find empty stops and clean them up
+    Stops = Stops.filter(function(n){ return n != undefined });
+
   })();
 
   return self;
