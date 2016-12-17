@@ -80,6 +80,13 @@ module.exports = function(config) {
  }
 
  /**
+  * Returns the position of the Stop
+  */
+ self.getPos = function() {
+   return Stop.pos;
+ };
+
+ /**
   * Returns main data object as json
   */
  self.getJSON = function() {
@@ -137,7 +144,7 @@ module.exports = function(config) {
    // TODO: add circle for drone
 
    // temporary, show location
-   self.debug(canvas);
+   //self.debug(canvas);
  };
 
  self.debug = function(canvas) {

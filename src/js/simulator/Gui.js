@@ -4,13 +4,14 @@
  */
 
 var $ = require('jquery');
+var BusIcon = require('./graphic/BusIcon.js');
 
 const BUSLINES_LEGEND = '*[data-bus-line-legend]';
 
 class GUI {
 
   constructor(canvas) {
-
+    this.canvas = canvas;
   }
 
   /**
@@ -19,6 +20,10 @@ class GUI {
    */
   animateCanvasObj(object, canvas, posStart, posEnd, speed) {
 
+  }
+
+  animateBus(pathResult) {
+    return new BusIcon(pathResult, this.canvas, {});
   }
 
   drawLegend(lines) {

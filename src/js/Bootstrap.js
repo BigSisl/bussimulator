@@ -113,6 +113,13 @@ module.exports = (function(){
     $.each(result, function(i, el) {
       console.log('POS: ', el.stop.getId(), el.line.getId());
     });
+
+    result.unshift({
+      stop: start,
+      line: null
+    });
+    gui.animateBus(result);
+
   }
 
   self.Save = function() {

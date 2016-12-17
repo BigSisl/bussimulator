@@ -11,6 +11,8 @@ var LineEditorMode = function(line, stops, canvas) {
   var activeLine = line;
 
   function init() {
+    canvas.setActiveObject(activeLine.getPath());
+    activeLine.getPath().bringToFront();
     events.add('object:selected', function(evt) {
       jq.each(stops, function(i, stop) {
         if(stop.getCircle() === evt.target) {
@@ -26,6 +28,10 @@ var LineEditorMode = function(line, stops, canvas) {
   };
 
   self.remove = function(){
+    activeLine.setPos({
+      x: activeLine.getPath().getLeft(),
+      y: activeLine.getPath().getTop()
+    });
     events.removeAll();
   };
 

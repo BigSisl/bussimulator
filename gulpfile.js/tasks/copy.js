@@ -11,6 +11,8 @@ self.index = function() {
   return gulp.src([
     config.src + '/**/*.html',
     config.src + '/**/*.json',
+    config.src + '/**/**/*.svg',
+    config.src + '/**/**/*.png',
     config.src + '/**/*.css'
   ])
   .pipe(gulp.dest(config.dest));

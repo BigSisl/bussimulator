@@ -7,3 +7,6 @@ var bootstrap = require('./js/Bootstrap.js');
 
 global.simulator = bootstrap;
 global.simulator.start();
+
+// TMP
+simulator.Calc(4, 2);

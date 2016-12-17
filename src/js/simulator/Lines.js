@@ -13,6 +13,7 @@ module.exports = function(config, stops) {
    * @type {[type]}
    */
   var Line = jq.extend({
+
     /**
      * Name to display of the stop, this is also the id
      * @type {String}
@@ -30,6 +31,12 @@ module.exports = function(config, stops) {
      * @type {Array}
      */
     stops: [],
+
+    /**
+     * Contains a custom position
+     * @type {Object}
+     */
+    pos: {},
 
     /**
      * Contains the color of the line
@@ -76,6 +83,14 @@ module.exports = function(config, stops) {
       selectable: true
     });
 
+    // only set pos if defined
+    if(Line.pos.x && Line.pos.y) {
+      path.set({
+        top: Line.pos.y,
+        left: Line.pos.x
+      });
+    }
+
     canvas.add(path);
     path.sendToBack();
   };
@@ -89,6 +104,16 @@ module.exports = function(config, stops) {
       opacity: active ? 1 : 0.4
     });
     return active;
+  }
+
+  /**
+   * Set a custom position of the object
+   * define x as left and y as top
+   * @param {[type]} pos [description]
+   */
+  self.setPos = function(pos) {
+    Line.pos.x = pos.x ? pos.x : Line.pos.x;
+    Line.pos.y = pos.y ? pos.y : Line.pos.y;
   }
 
   self.getColor = function() {
