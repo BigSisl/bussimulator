@@ -9,4 +9,4 @@ global.simulator = bootstrap;
 global.simulator.start();
 
 // TMP
-simulator.Calc(4, 2);
+simulator.Prod(true)

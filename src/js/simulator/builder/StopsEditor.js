@@ -41,6 +41,36 @@ var EditType = function(canvas, stops) {
   return self;
 }
 
+var SetHubType = function(canvas, stops) {
+  var events = new Events(canvas);
+
+  (function(canvas){
+    events.add('object:selected', function(evt) {
+      // find object by comparing the position
+      var index = -1;
+      jq.each(stops, function(i, stop) {
+        if(evt.target === stop.getCircle()) {
+          stop.isHub(true);
+        } else {
+          stop.isHub(false);
+        }
+
+        if(stop.isHub()) {
+          console.log(stop);
+        }
+      });
+
+      if (index > -1) {
+        stops.splice(index, 1);
+      }
+    });
+  })(canvas);
+
+ self.remove = function() {
+   events.removeAll();
+ }
+}
+
 var RemoveType = function(canvas, stops) {
   var events = new Events(canvas);
 
@@ -123,7 +153,8 @@ module.exports = (function() {
   self.Types = {
     ADD: AddType,
     REMOVE: RemoveType,
-    EDIT: EditType
+    EDIT: EditType,
+    SETHUB: SetHubType
   };
 
   /**
@@ -158,6 +189,11 @@ module.exports = (function() {
   self.edit = function(canvas, stops) {
     self.stop();
     active = new self.Types.EDIT(canvas, stops);
+  }
+
+  self.setHub = function(canvas, stops) {
+    self.stop();
+    active = new self.Types.SETHUB(canvas, stops);
   }
 
   /**

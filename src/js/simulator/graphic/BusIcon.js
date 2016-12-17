@@ -48,8 +48,6 @@ var BusIcon = function(linePath, canvas, config) {
   function loadedSvg(objects, options) {
     canvasObjects = fabric.util.groupSVGElements(objects, options);
 
-    console.log('linePath[0]', linePath[0].stop.getId());
-
     canvasObjects.set({
       left: linePath[0].stop.getPos().left,
       top: linePath[0].stop.getPos().top,
@@ -60,6 +58,8 @@ var BusIcon = function(linePath, canvas, config) {
     canvas.add(canvasObjects);
 
     animationQueue = [];
+
+    var droneEnd = linePath.pop();
 
     // generate animation queue
     $.each(linePath, function(i, path) {

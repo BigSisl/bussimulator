@@ -9,6 +9,7 @@ var LineEditor = require('./simulator/builder/LineEditor.js');
 var Simulator = require('./simulator/simulator.js');
 var fabric = require("fabric-browserify").fabric;
 var GUI = require("./simulator/Gui.js");
+var Target = require('./simulator/Target.js');
 
 var $ = require('jquery');
 
@@ -77,6 +78,7 @@ module.exports = (function(){
     stop:   function() { StopEditor.stop(); },
     edit:   function() { StopEditor.edit(canvas, stops); },
     remove: function() { StopEditor.remove(canvas, stops); },
+    setHub: function() { StopEditor.setHub(canvas, stops); },
     list: function() { return stops; },
     load:   function() { console.log('reload page') }
   };
@@ -120,6 +122,26 @@ module.exports = (function(){
     });
     gui.animateBus(result);
 
+  }
+
+  /**
+   * Activate Production mode
+   * @param {[type]} active [description]
+   */
+  self.Prod = function(active) {
+    if(active) {
+      Target.listen(canvas, function(target) {
+        target.stop = StopClass.findClosestStop(stops, target.getPos());
+
+        var result = simulator.getPathByTarget(target);
+
+        gui.animateBus(result);
+        // find closest stop
+        console.log(result);
+      });
+    } else {
+      Target.stop(canvas);
+    }
   }
 
   self.Save = function() {

@@ -11,6 +11,7 @@
  */
 var astar = require('./Astar.js').astar;
 var Graph = require('./Astar.js').Graph;
+var StopClass = require('./Stops.js');
 var $ = require('jquery');
 
 class CustomGraph {
@@ -77,6 +78,57 @@ class CustomGraph {
     for (var i = 0; i < self.nodes.length; i++) {
       astar.cleanNode(self.nodes[i]);
     }
+  }
+
+  /**
+   * Sets a hub, by looking for the node, where the stop === hub
+   * hub is nothing more then the stop
+   * and then create a new node, which will connect with the other nodes on that
+   * stop
+   */
+  setHub(hub) {
+    var self = this;
+    var node = new CustomNode(hub, null);
+    $.each(self.findNodesByStop(hub), function(i, neighbor) {
+       self.addEachOtherAsNeighbor(
+          node, neighbor
+       );
+    });
+    self.nodes.push(node);
+    astar.cleanNode(node);
+
+    return node;
+  }
+
+  setTarget(target) {
+    var self = this;
+    var node = new CustomNode(target.stop, null);
+    node.target = target;
+    $.each(self.findNodesByStop(target.stop), function(i, neighbor) {
+       self.addEachOtherAsNeighbor(
+          node, neighbor
+       );
+    });
+    self.nodes.push(node);
+    astar.cleanNode(node);
+
+    return node;
+  }
+
+  /**
+   * Creates target node, a custom node, which is connected a given stop
+   * but on a different position, to simulate the actual target
+   */
+  searchByTarget(target, hub) {
+    var result = astar.search(this, this.setHub(hub), this.setTarget(target));
+
+    return $.map(result, function(r) {
+      return {
+        line: r.line,
+        stop: r.stop,
+        target: r.target
+      };
+    });
   }
 
   search(start, end) {
@@ -197,7 +249,15 @@ module.exports = function(stops, lines) {
     var customGraph = new CustomGraph(stops);
 
     return customGraph.search(start, end);
-  }
+  };
+
+  self.getPathByTarget = function(target) {
+    var customGraph = new CustomGraph(stops);
+
+    // customGraph define hub
+
+    return customGraph.searchByTarget(target, StopClass.getHub(stops));
+  };
 
   return self;
 };

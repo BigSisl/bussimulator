@@ -6,7 +6,14 @@
 var jq = require('jquery');
 var fabric = require("fabric-browserify").fabric;
 
-module.exports = function(config) {
+/**
+ * Size of the stops in pixel
+ * @type {Number}
+ */
+const STOP_SIZE = 40;
+const DRONE_RADIUS = 140;
+
+var StopClass = function(config) {
  var self = {};
 
  /**
@@ -67,6 +74,12 @@ module.exports = function(config) {
   */
  var OverlayedText = null;
 
+  /**
+   * Drone ring to represent the the location of the drone
+   * @type {[type]}
+   */
+  var droneRing = null;
+
   self.getCircle = function() {
     return Circle;
   };
@@ -103,8 +116,8 @@ module.exports = function(config) {
   *
   * @return {Boolean} If it supports a hub / drones
   */
- self.isHub = function() {
-   return hub;
+ self.isHub = function(value) {
+   return Stop.hub = typeof value !== 'undefined' ? value : Stop.hub;
  };
 
  /**
@@ -119,14 +132,14 @@ module.exports = function(config) {
     };
 
     updateLine();
-
-    self.draw();
   };
 
   function updateLine() {
     Stop.lines = [];
     jq.each(Lines, function(i, line) {
-      Stop.lines.push(line.name);
+      if(Stop.lines.indexOf(line.name) < 0) {
+        Stop.lines.push(line.name);
+      }
     });
   }
 
@@ -138,8 +151,12 @@ module.exports = function(config) {
   * @return {[type]} [description]
   */
  self.draw = function(canvas) {
-   canvas.remove(Circle);
-   canvas.add(Circle);
+  canvas.remove(droneRing);
+  canvas.add(droneRing);
+  droneRing.sendToBack();
+
+  canvas.remove(Circle);
+  canvas.add(Circle);
 
    // TODO: add circle for drone
 
@@ -206,13 +223,23 @@ module.exports = function(config) {
    console.log('stop clicked');
  };
 
+ /**
+  * Is given coordinate in range
+  * @return {[type]} return -1 if not in reach, and if in range, return distance
+  */
+ self.inRange = function(coordinate) {
+   var x = Math.abs(coordinate.left - Stop.pos.left - STOP_SIZE / 2);
+   var y = Math.abs(coordinate.top - Stop.pos.top - STOP_SIZE / 2);
+   var length = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+   return DRONE_RADIUS >= length ? length : -1;
+ };
 
  /**
   * Encapsulated function to prepare eventhandling of the circle
   */
   (function() {
     Circle = new fabric.Circle({
-      radius: 20, left: Stop.pos.left, top: Stop.pos.top, fill: '#aac',
+      radius: STOP_SIZE / 2, left: Stop.pos.left, top: Stop.pos.top, fill: Stop.hub ? 'red' : '#aac',
       hasControls: false,
       lockMovementX: true,
       lockMovementY: true
@@ -224,7 +251,44 @@ module.exports = function(config) {
       fill: 'black'
     });
 
+    // draw drone ring
+    droneRing = new fabric.Circle({
+      radius: DRONE_RADIUS,
+      left: Stop.pos.left - (DRONE_RADIUS - (STOP_SIZE / 2)),
+      top: Stop.pos.top - (DRONE_RADIUS - (STOP_SIZE / 2)),
+      stroke: 'red',
+      fill: 'rgba(0,0,255,0.1)',
+      strokeWidth: 2,
+      opacity: 0.8,
+      selectable: false
+    })
+
   })();
 
  return self;
 }
+
+StopClass.findClosestStop = function(stops, pos) {
+  var closest = null;
+  var lastDistance = DRONE_RADIUS + 1;
+  jq.each(stops, function(i, stop) {
+    var distance = stop.inRange(pos);
+    if(distance >= 0 && lastDistance > distance) {
+      closest = stop;
+      lastDistance = distance;
+    }
+  });
+  return closest;
+};
+
+StopClass.getHub = function(stops) {
+  var found = null;
+  jq.each(stops, function(i, stop) {
+    if(stop.isHub()) {
+      found = stop;
+    }
+  });
+  return found;
+};
+
+module.exports = StopClass;
