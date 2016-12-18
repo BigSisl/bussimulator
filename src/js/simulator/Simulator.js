@@ -120,7 +120,7 @@ class CustomGraph {
    * but on a different position, to simulate the actual target
    */
   searchByTarget(target, hub) {
-    var result = astar.search(this, this.setHub(hub), this.setTarget(target));
+    var result = astar.search(this, this.setHub(hub), this.setTarget(target), { heuristic: astar.heuristics.diagonal });
 
     return $.map(result, function(r) {
       return {
@@ -204,6 +204,7 @@ class CustomNode {
 
     this.neighbors = [];
 
+    // default weight is always 1
     this.weight = 1;
   }
 
@@ -224,9 +225,12 @@ class CustomNode {
   }
 
   getCost(fromNeighbor) {
-    // Take diagonal weight into consideration.
+    // Take diagonal weight into consideration. Imortant here is the actual line length Traveled
     if (fromNeighbor && fromNeighbor.x != this.x && fromNeighbor.y != this.y) {
-      return this.weight * 1.41421;
+      return this.weight * Math.sqrt(
+        Math.pow(Math.abs(this.x - fromNeighbor.x), 2) +
+        Math.pow(Math.abs(this.y - fromNeighbor.y), 2)
+      );
     }
     return this.weight;
   };
@@ -253,6 +257,11 @@ module.exports = function(stops, lines) {
 
   self.getPathByTarget = function(target) {
     var customGraph = new CustomGraph(stops);
+
+    // TMP
+    $.each(customGraph.nodes, function(i, n) {
+      console.log(n.stop.getId(), n.neighbors);
+    });
 
     // customGraph define hub
 
