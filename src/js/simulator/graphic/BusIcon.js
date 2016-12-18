@@ -4,6 +4,15 @@
  */
 var $ = require('jquery');
 var fabric = require('fabric-browserify').fabric;
+var StopClass = require('../Stops.js');
+
+/**
+ * Package event list
+ */
+const PACKAGE_STARTED           = global.PACKAGE_STARTED          = 0;
+const PACKAGE_CHANGEING_LINE    = global.PACKAGE_CHANGEING_LINE   = 1;
+const PACKAGE_PASSINGSTOP       = global.PACKAGE_PASSINGSTOP      = 2;
+const PACKAGE_REACHED_ENDSTOP   = global.PACKAGE_REACHED_ENDSTOP  = 3;
 
 var BusIcon = function(linePath, canvas, config) {
   /**
@@ -22,7 +31,6 @@ var BusIcon = function(linePath, canvas, config) {
      * @type {Number}
      */
     swapspeed: 5,
-
   }, config);
 
   var self = {};
@@ -39,6 +47,8 @@ var BusIcon = function(linePath, canvas, config) {
     funcStartTime;
 
   var animationQueue;
+
+  var target = null;
 
   function constructor() {
     // start animation loop
@@ -60,6 +70,7 @@ var BusIcon = function(linePath, canvas, config) {
     animationQueue = [];
 
     var droneEnd = linePath.pop();
+    target = droneEnd.target;
 
     // generate animation queue
     $.each(linePath, function(i, path) {
@@ -80,11 +91,22 @@ var BusIcon = function(linePath, canvas, config) {
 
     });
 
-    animationQueue.push(disapearAnimation(1000));
-
     // at the end remove target
     if(droneEnd.target) {
+      // change to bus
       animationQueue.push(waitFunction(1000));
+      animationQueue.push(animateFunction(
+        linePath[linePath.length - 1].stop.getPos(),
+        {
+          left: droneEnd.target.getPos().left - StopClass.getRadius(),
+          top: droneEnd.target.getPos().top - StopClass.getRadius()
+        },
+        config.busspeed
+      ));
+
+
+      animationQueue.push(disapearAnimation(1000));
+
       animationQueue.push(RemoveTargetAnimation(
         droneEnd.target
       ));

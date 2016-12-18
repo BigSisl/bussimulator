@@ -22,6 +22,8 @@ var Target = function(pos, canvas) {
 
   var removed = false;
 
+  var pkg = null;
+
   self.draw = function(canvas) {
     if(!removed) {
       canvas.remove(pin);
@@ -37,6 +39,14 @@ var Target = function(pos, canvas) {
   self.readd = function() {
     removed = false;
     self.draw(canvas);
+  }
+
+  self.on = function(eventTriggered, args) {
+    console.log(eventTriggered,args);
+  }
+
+  self.setPackage = function(_pkg) {
+    pkg = _pkg;
   }
 
   self.getPos = function() {

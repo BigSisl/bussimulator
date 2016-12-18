@@ -9,5 +9,9 @@ module.exports = (function() {
     console.log(message);
   }
 
+  self.log = function(message) {
+    console.log(message);
+  }
+
   return self;
 })();

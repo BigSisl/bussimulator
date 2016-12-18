@@ -11,7 +11,8 @@ var fabric = require("fabric-browserify").fabric;
 var GUI = require("./simulator/Gui.js");
 var Target = require('./simulator/Target.js');
 var Save = require('./simulator/builder/Save.js');
-var Message = require('./simulator/Message.js')
+var Message = require('./simulator/Message.js');
+var Package = require('./simulator/Package.js');
 
 var $ = require('jquery');
 
@@ -166,6 +167,8 @@ module.exports = (function(){
 
         if(target.stop) {
           var result = simulator.getPathByTarget(target);
+
+          target.setPackage(new Package());
 
           gui.animateBus(result);
           // find closest stop
