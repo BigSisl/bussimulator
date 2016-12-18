@@ -10,6 +10,7 @@ var Simulator = require('./simulator/simulator.js');
 var fabric = require("fabric-browserify").fabric;
 var GUI = require("./simulator/Gui.js");
 var Target = require('./simulator/Target.js');
+var Save = require('./simulator/builder/Save.js');
 
 var $ = require('jquery');
 
@@ -47,6 +48,22 @@ module.exports = (function(){
    */
   var gui = null;
 
+  self.load = function(url, cb) {
+    var count = 0;
+
+    Save.loadFromServer(url + 'lines.json', 'local.lines', function() {
+      if(count++ >= 1) {
+        cb();
+      }
+    });
+    Save.loadFromServer(url + 'stops.json', 'local.stops', function() {
+      if(count++ >= 1) {
+        cb();
+      }
+    });
+
+  };
+
   self.start = function() {
     // load
     stops = StopEditor.load(canvas);
@@ -58,11 +75,11 @@ module.exports = (function(){
 
     self.draw();
     // setup application / bootstrap application
-  }
+  };
 
   self.draw = function() {
     gui.drawLegend(lines);
-  }
+  };
 
   /**
    * Activate editor in commandline

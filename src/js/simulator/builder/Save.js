@@ -20,6 +20,18 @@ module.exports = (function() {
   }
 
   /**
+   * Load data information from server
+   */
+  self.loadFromServer = function(url, key, cb) {
+    jq.ajax(url, {
+      complete: function(xhr) {
+        self.set(key, xhr.responseText);
+        cb();
+      }
+    });
+  }
+
+  /**
    * Saving all changes
    * @return {[type]} [description]
    */
