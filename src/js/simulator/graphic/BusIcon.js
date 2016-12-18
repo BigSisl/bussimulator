@@ -195,8 +195,8 @@ var BusIcon = function(linePath, canvas, config) {
       console.log(posStart.x + x, posStart.x, x);
 
       canvasObjects.set({
-        top: posStart.y + y, // (posEnd.y ? posEnd.y : posEnd.top),
-        left: posStart.x + x // (posEnd.x ? posEnd.x : posEnd.left)
+        top: pos >= length ? posEnd.y : posStart.y + y, // (posEnd.y ? posEnd.y : posEnd.top),
+        left: pos >= length ? posEnd.x : posStart.x + x // (posEnd.x ? posEnd.x : posEnd.left)
       });
 
       console.log(canvasObjects.getLeft(), canvasObjects.getTop());
