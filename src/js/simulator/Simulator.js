@@ -258,11 +258,6 @@ module.exports = function(stops, lines) {
   self.getPathByTarget = function(target) {
     var customGraph = new CustomGraph(stops);
 
-    // TMP
-    $.each(customGraph.nodes, function(i, n) {
-      console.log(n.stop.getId(), n.neighbors);
-    });
-
     // customGraph define hub
 
     return customGraph.searchByTarget(target, StopClass.getHub(stops));

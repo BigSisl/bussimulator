@@ -12,10 +12,10 @@ var BusIcon = function(linePath, canvas, config) {
    */
   config = $.extend({
     /**
-     * Bus num pixel in one s
+     * Bus num pixel in one ms
      * @type {Number}
      */
-    busspeed: 20,
+    busspeed: 0.2,
 
     /**
      * ms needed to change packe from one line to the other
@@ -67,9 +67,9 @@ var BusIcon = function(linePath, canvas, config) {
 
       if(last) {
         if(last.stop.getId() === path.stop.getId()) {
+          animationQueue.push(waitFunction(500));
           console.log('same Stop -> Line Swap', last.line.getId(), path.line.getId());
         } else {
-          animationQueue.push(waitFunction(1000));
           animationQueue.push(animateFunction(
             last.stop.getPos(),
             path.stop.getPos(),
@@ -169,12 +169,34 @@ var BusIcon = function(linePath, canvas, config) {
    * @return {[type]}           [description]
    */
   function animateFunction(posStart, posEnd, speed) {
-    return function(deltaTime) {
+
+    posEnd.y = (posEnd.y ? posEnd.y : posEnd.top);
+    posEnd.x = (posEnd.x ? posEnd.x : posEnd.left);
+
+    posStart.y = (posStart.y ? posStart.y : posStart.top);
+    posStart.x = (posStart.x ? posStart.x : posStart.left);
+
+    var length = Math.sqrt(
+      Math.pow(Math.abs(posEnd.x - posStart.x), 2) +
+      Math.pow(Math.abs(posEnd.y - posStart.y), 2)
+    );
+
+    var speed = speed
+
+    return function(deltaTime, totalTime) {
+      var pos = totalTime * speed;
+
+      var y = pos * (posEnd.y - posStart.y) / length,
+          x = pos * (posEnd.x - posStart.x) / length;
+
       console.log('deltaTime', deltaTime, posStart, posEnd, speed);
 
+      console.log(posStart.y + y, posStart.y, y);
+      console.log(posStart.x + x, posStart.x, x);
+
       canvasObjects.set({
-        top: (posEnd.y ? posEnd.y : posEnd.top),
-        left: (posEnd.x ? posEnd.x : posEnd.left)
+        top: posStart.y + y, // (posEnd.y ? posEnd.y : posEnd.top),
+        left: posStart.x + x // (posEnd.x ? posEnd.x : posEnd.left)
       });
 
       console.log(canvasObjects.getLeft(), canvasObjects.getTop());
@@ -182,7 +204,7 @@ var BusIcon = function(linePath, canvas, config) {
       canvas.remove(canvasObjects);
       canvas.add(canvasObjects);
 
-      return true;
+      return pos >= length;
     }
   }
 
