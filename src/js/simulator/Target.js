@@ -20,14 +20,24 @@ var Target = function(pos, canvas) {
 
   var pin = null;
 
+  var removed = false;
+
   self.draw = function(canvas) {
-    canvas.remove(pin);
-    canvas.add(pin);
+    if(!removed) {
+      canvas.remove(pin);
+      canvas.add(pin);
+    }
   };
 
   self.remove = function(canvas) {
+    removed = true;
     canvas.remove(pin);
   };
+
+  self.readd = function() {
+    removed = false;
+    self.draw(canvas);
+  }
 
   self.getPos = function() {
     return pos;
@@ -64,8 +74,8 @@ Target.listen = function(canvas, cb) {
 
   events.add('mouse:up', function(evt) {
     var target = new Target({
-      top: evt.e.y - element.offset().top,
-      left: evt.e.x - element.offset().left
+      top: evt.e.y - element.offset().top + $(document).scrollTop(),
+      left: evt.e.x - element.offset().left + $(document).scrollLeft()
     }, canvas);
 
     cb(target);

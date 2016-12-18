@@ -11,6 +11,7 @@ var fabric = require("fabric-browserify").fabric;
 var GUI = require("./simulator/Gui.js");
 var Target = require('./simulator/Target.js');
 var Save = require('./simulator/builder/Save.js');
+var Message = require('./simulator/Message.js')
 
 var $ = require('jquery');
 
@@ -22,7 +23,7 @@ module.exports = (function(){
    * Canvas object used for drawing all elements
    * @type {fabric}
    */
-  var canvas = new fabric.Canvas('canvas-simulator');
+  var canvas = null;
 
   /**
    * Array of all stops -> immutable?
@@ -64,17 +65,21 @@ module.exports = (function(){
 
   };
 
-  self.start = function() {
-    // load
-    stops = StopEditor.load(canvas);
-    lines = LineEditor.load(canvas, stops);
+  self.start = function(map) {
+    gui = global.gui = new GUI(map);
+    canvas = gui.getCanvas();
+    var MapObj = gui.getActiveMap();
 
-    gui = global.gui = new GUI(canvas);
+    // setup application / bootstrap map
+    this.load(MapObj.url, function() {
+        // load
+        stops = StopEditor.load(canvas);
+        lines = LineEditor.load(canvas, stops);
 
-    simulator = new Simulator(stops, lines)
+        simulator = new Simulator(stops, lines)
 
-    self.draw();
-    // setup application / bootstrap application
+        self.draw();
+    });
   };
 
   self.draw = function() {
@@ -120,6 +125,15 @@ module.exports = (function(){
     stop: function() { LineEditor.stop(); }
   }
 
+  self.GetMap = function() {
+    console.log(
+      JSON.stringify(Save.get('local.stops'))
+    );
+    console.log(
+      JSON.stringify(Save.get('local.lines'))
+    )
+  };
+
   self.Calc = function(stop1, stop2) {
 
     // TMP
@@ -150,11 +164,16 @@ module.exports = (function(){
       Target.listen(canvas, function(target) {
         target.stop = StopClass.findClosestStop(stops, target.getPos());
 
-        var result = simulator.getPathByTarget(target);
+        if(target.stop) {
+          var result = simulator.getPathByTarget(target);
 
-        gui.animateBus(result);
-        // find closest stop
-        console.log(result);
+          gui.animateBus(result);
+          // find closest stop
+          console.log(result);
+        } else {
+          target.remove(canvas);
+          Message.error('Ziel ist nicht erreichbar');
+        }
       });
     } else {
       Target.stop(canvas);

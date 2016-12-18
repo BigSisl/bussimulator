@@ -82,6 +82,14 @@ var BusIcon = function(linePath, canvas, config) {
 
     animationQueue.push(disapearAnimation(1000));
 
+    // at the end remove target
+    if(droneEnd.target) {
+      animationQueue.push(waitFunction(1000));
+      animationQueue.push(RemoveTargetAnimation(
+        droneEnd.target
+      ));
+    }
+
     startTime = prevTime = funcStartTime = Date.now();
     animationFunction = null;
     done = true;
@@ -98,6 +106,14 @@ var BusIcon = function(linePath, canvas, config) {
   })();
 
   var animationFunction = null;
+
+  function RemoveTargetAnimation(target) {
+    return function() {
+      console.log('remove target');
+      target.remove(canvas);
+      return true;
+    }
+  }
 
   function runAnimationQueue() {
   	request = fabric.util.requestAnimFrame(runAnimationQueue);

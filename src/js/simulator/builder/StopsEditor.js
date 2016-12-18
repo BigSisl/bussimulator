@@ -123,10 +123,11 @@ var AddType = function(canvas, cb) {
   // prepare type -> smarter way to do this
   (function(canvas){
     events.add('mouse:down', function(evt) {
+      console.log(evt.e.x - element.offset().left, evt.e.x, element.offset().left, jq(document).scrollTop());
       cb(new StopClass({
         pos: {
-          top: evt.e.y - element.offset().top,
-          left: evt.e.x - element.offset().left
+          top: evt.e.y - element.offset().top + jq(document).scrollTop() - StopClass.getRadius(),
+          left: evt.e.x - element.offset().left + jq(document).scrollLeft() - StopClass.getRadius()
         }
       }));
     });

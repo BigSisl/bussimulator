@@ -281,6 +281,10 @@ StopClass.findClosestStop = function(stops, pos) {
   return closest;
 };
 
+StopClass.getRadius = function() {
+  return (STOP_SIZE / 2.0);
+}
+
 StopClass.getHub = function(stops) {
   var found = null;
   jq.each(stops, function(i, stop) {
