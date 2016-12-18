@@ -14,6 +14,11 @@ const PACKAGE_CHANGEING_LINE    = global.PACKAGE_CHANGEING_LINE   = 1;
 const PACKAGE_PASSINGSTOP       = global.PACKAGE_PASSINGSTOP      = 2;
 const PACKAGE_REACHED_ENDSTOP   = global.PACKAGE_REACHED_ENDSTOP  = 3;
 
+const PACKAGE_WAITING_FOR_BUS   = global.PACKAGE_WAITING_FOR_BUS  = 20;
+const PACKAGE_GOT_ON_BUS        = global.PACKAGE_GOT_ON_BUS       = 10;
+const PACKAGE_WAITING_FOR_DRONE = global.PACKAGE_WAITING_FOR_DRONE= 21;
+const PACKAGE_GOT_ON_DRONE      = global.PACKAGE_GOT_ON_DRONE     = 11;
+
 var BusIcon = function(linePath, canvas, config) {
   /**
    * Prepare default configurations / values
@@ -30,7 +35,9 @@ var BusIcon = function(linePath, canvas, config) {
      * ms needed to change packe from one line to the other
      * @type {Number}
      */
-    swapspeed: 5,
+    swapspeed: 500,
+
+    dronewaiting: 1000
   }, config);
 
   var self = {};
@@ -72,15 +79,19 @@ var BusIcon = function(linePath, canvas, config) {
     var droneEnd = linePath.pop();
     target = droneEnd.target;
 
+    animationQueue.push(eventCallback(PACKAGE_STARTED));
     // generate animation queue
     $.each(linePath, function(i, path) {
       var last = i > 0 ? linePath[i - 1] : null;
 
       if(last) {
         if(last.stop.getId() === path.stop.getId()) {
-          animationQueue.push(waitFunction(500));
-          console.log('same Stop -> Line Swap', last.line.getId(), path.line.getId());
+          animationQueue.push(eventCallback(PACKAGE_CHANGEING_LINE, [last.line, path.line]));
+          animationQueue.push(eventCallback(PACKAGE_WAITING_FOR_BUS, [path.line]));
+          animationQueue.push(waitFunction(config.swapspeed));
+          animationQueue.push(eventCallback(PACKAGE_GOT_ON_BUS, [path.line]));
         } else {
+        animationQueue.push(eventCallback(PACKAGE_PASSINGSTOP, [path.stop]));
           animationQueue.push(animateFunction(
             last.stop.getPos(),
             path.stop.getPos(),
@@ -94,7 +105,9 @@ var BusIcon = function(linePath, canvas, config) {
     // at the end remove target
     if(droneEnd.target) {
       // change to bus
+      animationQueue.push(eventCallback(PACKAGE_WAITING_FOR_DRONE));
       animationQueue.push(waitFunction(1000));
+      animationQueue.push(eventCallback(PACKAGE_GOT_ON_DRONE));
       animationQueue.push(animateFunction(
         linePath[linePath.length - 1].stop.getPos(),
         {
@@ -103,9 +116,9 @@ var BusIcon = function(linePath, canvas, config) {
         },
         config.busspeed
       ));
+      animationQueue.push(eventCallback(PACKAGE_REACHED_ENDSTOP));
 
-
-      animationQueue.push(disapearAnimation(1000));
+      animationQueue.push(disapearAnimation(config.dronewaiting));
 
       animationQueue.push(RemoveTargetAnimation(
         droneEnd.target
@@ -128,6 +141,22 @@ var BusIcon = function(linePath, canvas, config) {
   })();
 
   var animationFunction = null;
+
+  function eventCallback(event, args) {
+    return function() {
+      if(target) {
+        target.on(event, args);
+      }
+      return true;
+    }
+  }
+
+  function createCallback(cb) {
+    return function() {
+      cb();
+      return true;
+    }
+  }
 
   function RemoveTargetAnimation(target) {
     return function() {
@@ -211,17 +240,10 @@ var BusIcon = function(linePath, canvas, config) {
       var y = pos * (posEnd.y - posStart.y) / length,
           x = pos * (posEnd.x - posStart.x) / length;
 
-      console.log('deltaTime', deltaTime, posStart, posEnd, speed);
-
-      console.log(posStart.y + y, posStart.y, y);
-      console.log(posStart.x + x, posStart.x, x);
-
       canvasObjects.set({
         top: pos >= length ? posEnd.y : posStart.y + y, // (posEnd.y ? posEnd.y : posEnd.top),
         left: pos >= length ? posEnd.x : posStart.x + x // (posEnd.x ? posEnd.x : posEnd.left)
       });
-
-      console.log(canvasObjects.getLeft(), canvasObjects.getTop());
 
       canvas.remove(canvasObjects);
       canvas.add(canvasObjects);

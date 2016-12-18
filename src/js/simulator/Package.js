@@ -20,6 +20,10 @@ var Package = function() {
     console.log(args);
   }
 
+  self.getPackageNumber = function() {
+    return self.packageNumber; 
+  }
+
   function constructor() {
     self.packageNumber = generatePackageNumber();
 
