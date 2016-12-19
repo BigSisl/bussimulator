@@ -37,7 +37,10 @@ var BusIcon = function(linePath, canvas, config) {
      */
     swapspeed: 500,
 
-    dronewaiting: 1000
+    dronewaiting: 1000,
+
+    size: 0.6
+
   }, config);
 
   var self = {};
@@ -57,6 +60,8 @@ var BusIcon = function(linePath, canvas, config) {
 
   var target = null;
 
+  var offset = StopClass.getRadius();
+
   function constructor() {
     // start animation loop
     fabric.loadSVGFromURL('./data/PackageBoxIcon.svg', loadedSvg);
@@ -66,10 +71,10 @@ var BusIcon = function(linePath, canvas, config) {
     canvasObjects = fabric.util.groupSVGElements(objects, options);
 
     canvasObjects.set({
-      left: linePath[0].stop.getPos().left,
-      top: linePath[0].stop.getPos().top,
-      scaleX: 0.4,
-      scaleY: 0.4
+      left: linePath[0].stop.getPos().left - offset,
+      top: linePath[0].stop.getPos().top - offset,
+      scaleX: config.size,
+      scaleY: config.size
     });
 
     canvas.add(canvasObjects);
@@ -249,8 +254,8 @@ var BusIcon = function(linePath, canvas, config) {
           x = pos * (posEnd.x - posStart.x) / length;
 
       canvasObjects.set({
-        top: pos >= length ? posEnd.y : posStart.y + y, // (posEnd.y ? posEnd.y : posEnd.top),
-        left: pos >= length ? posEnd.x : posStart.x + x // (posEnd.x ? posEnd.x : posEnd.left)
+        top: (pos >= length ? posEnd.y : posStart.y + y) - offset, // (posEnd.y ? posEnd.y : posEnd.top),
+        left: (pos >= length ? posEnd.x : posStart.x + x) - offset // (posEnd.x ? posEnd.x : posEnd.left)
       });
 
       canvas.remove(canvasObjects);
