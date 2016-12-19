@@ -43,9 +43,9 @@ var Target = function(pos, canvas) {
   messages[PACKAGE_STARTED]         = function(pkgname, args) {
     return 'Paket ' + pkgname + ' ist auf dem Weg';
   };
-  messages[PACKAGE_CHANGEING_LINE]  = function(pkgname, args) {
-    return 'Paket ' + pkgname + ' wechselt nun die Line von ' +  + args[0].getId() + ' zu ' + args[1].getId();
-  };
+//  messages[PACKAGE_CHANGEING_LINE]  = function(pkgname, args) {
+//    return 'Paket ' + pkgname + ' wechselt nun die Line von ' +  + args[0].getId() + ' zu ' + args[1].getId();
+//  };
   messages[PACKAGE_REACHED_ENDSTOP]  = function(pkgname, args) {
     return 'Paket ' + pkgname + ' hat sein Ziel erreicht';
   };

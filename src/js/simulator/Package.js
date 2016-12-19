@@ -21,7 +21,7 @@ var Package = function() {
   }
 
   self.getPackageNumber = function() {
-    return self.packageNumber; 
+    return self.packageNumber;
   }
 
   function constructor() {
@@ -35,7 +35,7 @@ var Package = function() {
 }
 
 function generatePackageNumber() {
-  return '#'+Math.floor(Math.random()*16777215).toString(16);
+  return '#'+Math.floor(Math.random()*8777215).toString(16);
 }
 
 module.exports = Package;

@@ -28,6 +28,15 @@ const MAPS = {
       'width': 1000
     },
     'url': './json/demo/'
+  },
+  'custom': {
+    'name': 'custom',
+    'img': './data/maps/map-drone_noLine.png',
+    'size': {
+      'height': 1200,
+      'width': 1920
+    },
+    'url': './json/custom/'
   }
 }
 

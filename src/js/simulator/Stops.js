@@ -10,8 +10,8 @@ var fabric = require("fabric-browserify").fabric;
  * Size of the stops in pixel
  * @type {Number}
  */
-const STOP_SIZE = 40;
-const DRONE_RADIUS = 140;
+const STOP_SIZE = 30;
+const DRONE_RADIUS = 250;
 
 var StopClass = function(config) {
  var self = {};
@@ -151,10 +151,6 @@ var StopClass = function(config) {
   * @return {[type]} [description]
   */
  self.draw = function(canvas) {
-  canvas.remove(droneRing);
-  canvas.add(droneRing);
-  droneRing.sendToBack();
-
   canvas.remove(Circle);
   canvas.add(Circle);
 
@@ -209,6 +205,15 @@ var StopClass = function(config) {
     return Lines;
   };
 
+  self.hideRadius = function(canvas) {
+    canvas.remove(droneRing);
+  };
+
+  self.showRadius = function(canvas) {
+    canvas.add(droneRing);
+    droneRing.sendToBack();
+  };
+
  self.remove = function(canvas) {
     jq.each(Lines, function(i, line) {
       line.removeStop(self);
@@ -239,7 +244,7 @@ var StopClass = function(config) {
   */
   (function() {
     Circle = new fabric.Circle({
-      radius: STOP_SIZE / 2, left: Stop.pos.left, top: Stop.pos.top, fill: Stop.hub ? 'red' : '#aac',
+      radius: STOP_SIZE / 2, left: Stop.pos.left, top: Stop.pos.top, fill: Stop.hub ? 'red' : '#33f',
       hasControls: false,
       lockMovementX: true,
       lockMovementY: true

@@ -7,5 +7,5 @@ var bootstrap = require('./js/Bootstrap.js');
 
 global.simulator = bootstrap;
 
-global.simulator.start('demo');
+global.simulator.start('custom');
 simulator.Prod(true);

@@ -162,6 +162,10 @@ module.exports = (function(){
    */
   self.Prod = function(active) {
     if(active) {
+      $.each(lines, function(i, el) {
+        el.setSelectable(false);
+      });
+
       Target.listen(canvas, function(target) {
         target.stop = StopClass.findClosestStop(stops, target.getPos());
 
@@ -179,6 +183,14 @@ module.exports = (function(){
         }
       });
     } else {
+      $.each(lines, function(i, el) {
+        el.setSelectable(false);
+      });
+
+      el.getPath().set({
+        selectable: true
+      });
+
       Target.stop(canvas);
     }
   }

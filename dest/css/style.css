@@ -14,6 +14,10 @@
   white-space: normal;
   width: 392px;
   z-index: 10;
+  
+  top: 40px;
+  left: 0;
+  position: fixed;
 }
 
 .package-id {

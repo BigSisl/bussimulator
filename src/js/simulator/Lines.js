@@ -45,6 +45,8 @@ module.exports = function(config, stops) {
     color: getRandomColor(),
   }, config);
 
+  var selectable = false;
+
   var Stops = [];
 
   var path = null;
@@ -70,6 +72,11 @@ module.exports = function(config, stops) {
     return color
   }
 
+  self.setSelectable = function(status) {
+    selectable = status;
+    self.draw();
+  }
+
   // redraw the path, TMP here
   self.draw = function(canvas) {
     canvas.remove(path);
@@ -80,7 +87,7 @@ module.exports = function(config, stops) {
       stroke: Line.color,
       strokeWidth: 5 ,
       opacity: 0.4,
-      selectable: true
+      selectable: selectable
     });
 
     // only set pos if defined

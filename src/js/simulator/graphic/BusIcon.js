@@ -79,6 +79,9 @@ var BusIcon = function(linePath, canvas, config) {
     var droneEnd = linePath.pop();
     target = droneEnd.target;
 
+    animationQueue.push(createCallback(function() {
+      droneEnd.stop.showRadius(canvas);
+    }));
     animationQueue.push(eventCallback(PACKAGE_STARTED));
     // generate animation queue
     $.each(linePath, function(i, path) {
@@ -123,6 +126,11 @@ var BusIcon = function(linePath, canvas, config) {
       animationQueue.push(RemoveTargetAnimation(
         droneEnd.target
       ));
+
+      animationQueue.push(createCallback(function() {
+        droneEnd.stop.hideRadius(canvas);
+      }));
+
     }
 
     startTime = prevTime = funcStartTime = Date.now();
