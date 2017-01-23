@@ -5,6 +5,9 @@
 var jq = require('jquery');
 var fabric = require('fabric-browserify').fabric;
 
+const LINE_OPACITY = 0.6;
+const LINE_WIDTH = 5;
+
 module.exports = function(config, stops) {
   var self = {};
 
@@ -85,8 +88,8 @@ module.exports = function(config, stops) {
     path.set({
       fill: '',
       stroke: Line.color,
-      strokeWidth: 5 ,
-      opacity: 0.4,
+      strokeWidth: LINE_WIDTH,
+      opacity: LINE_OPACITY,
       selectable: selectable
     });
 
@@ -108,7 +111,7 @@ module.exports = function(config, stops) {
 
   self.active = function(active) {
     path.set({
-      opacity: active ? 1 : 0.4
+      opacity: active ? 1 : LINE_OPACITY
     });
     return active;
   }

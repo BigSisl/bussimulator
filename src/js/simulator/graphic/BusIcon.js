@@ -29,7 +29,7 @@ var BusIcon = function(linePath, canvas, config) {
      * Bus num pixel in one ms
      * @type {Number}
      */
-    busspeed: 0.2,
+    busspeed: 0.15,
 
     /**
      * ms needed to change packe from one line to the other
@@ -38,6 +38,8 @@ var BusIcon = function(linePath, canvas, config) {
     swapspeed: 500,
 
     dronewaiting: 1000,
+
+    rotationSpeed: 0.5,
 
     size: 0.6
 
@@ -60,7 +62,7 @@ var BusIcon = function(linePath, canvas, config) {
 
   var target = null;
 
-  var offset = StopClass.getRadius();
+  var offset = -(StopClass.getRadius());
 
   function constructor() {
     // start animation loop
@@ -74,7 +76,9 @@ var BusIcon = function(linePath, canvas, config) {
       left: linePath[0].stop.getPos().left - offset,
       top: linePath[0].stop.getPos().top - offset,
       scaleX: config.size,
-      scaleY: config.size
+      scaleY: config.size,
+      originX: 'center',
+      originY: 'center',
     });
 
     canvas.add(canvasObjects);
@@ -122,7 +126,8 @@ var BusIcon = function(linePath, canvas, config) {
           left: droneEnd.target.getPos().left - StopClass.getRadius(),
           top: droneEnd.target.getPos().top - StopClass.getRadius()
         },
-        config.busspeed
+        config.busspeed,
+        config.rotationSpeed
       ));
       animationQueue.push(eventCallback(PACKAGE_REACHED_ENDSTOP));
 
@@ -230,9 +235,12 @@ var BusIcon = function(linePath, canvas, config) {
    * @param  {[type]} posEnd    [description]
    * @param  {[type]} deltaTime [description]
    * @param  {[type]} speed     pixel per ms
+   * @param  {[type]} speed     rotation
    * @return {[type]}           [description]
    */
-  function animateFunction(posStart, posEnd, speed) {
+  function animateFunction(posStart, posEnd, speed, rotate) {
+
+    rotate = rotate ? rotate : 0;
 
     posEnd.y = (posEnd.y ? posEnd.y : posEnd.top);
     posEnd.x = (posEnd.x ? posEnd.x : posEnd.left);
@@ -255,7 +263,8 @@ var BusIcon = function(linePath, canvas, config) {
 
       canvasObjects.set({
         top: (pos >= length ? posEnd.y : posStart.y + y) - offset, // (posEnd.y ? posEnd.y : posEnd.top),
-        left: (pos >= length ? posEnd.x : posStart.x + x) - offset // (posEnd.x ? posEnd.x : posEnd.left)
+        left: (pos >= length ? posEnd.x : posStart.x + x) - offset, // (posEnd.x ? posEnd.x : posEnd.left)
+        angle: (rotate * totalTime) % 360
       });
 
       canvas.remove(canvasObjects);
