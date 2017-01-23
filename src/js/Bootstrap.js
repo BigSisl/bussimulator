@@ -38,6 +38,8 @@ module.exports = (function(){
    */
   var lines = []
 
+  var procentage = 1;
+
   /**
    * Reference to the actual simulator
    * @type {[type]}
@@ -70,6 +72,12 @@ module.exports = (function(){
     gui = global.gui = new GUI(map);
     canvas = gui.getCanvas();
     var MapObj = gui.getActiveMap();
+
+    procentage = $(window).width() / $('#canvas-simulator').width();
+
+    $('.canvas-container').css({
+        'zoom': procentage
+    });
 
     // setup application / bootstrap map
     this.load(MapObj.url, function() {

@@ -118,11 +118,23 @@ Target.listen = function(canvas, cb) {
   events = new Events(canvas);
   var element = $(canvas.wrapperEl);
 
+  var procentage = $(document).width() / $('#canvas-simulator').width();
+
+
   events.add('mouse:up', function(evt) {
-    var target = new Target({
-      top: evt.e.y - element.offset().top + $(document).scrollTop(),
-      left: evt.e.x - element.offset().left + $(document).scrollLeft()
-    }, canvas);
+
+    var pos = {
+      top: (evt.e.y / procentage) - element.offset().top + $(document).scrollTop(),
+      left: (evt.e.x  / procentage) - element.offset().left + $(document).scrollLeft(),
+      ttop: element.offset().top,
+      tleft: element.offset().left,
+      dtop: $(document).scrollTop(),
+      dleft: $(document).scrollLeft()
+    };
+
+    console.log(pos);
+
+    var target = new Target(pos, canvas);
 
     cb(target);
   });

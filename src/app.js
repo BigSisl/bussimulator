@@ -9,9 +9,3 @@ global.simulator = bootstrap;
 
 global.simulator.start('custom');
 simulator.Prod(true);
-
-
-
-jq('.canvas-container').css({
-    'zoom': jq(window).width() / jq('#canvas-simulator').width()
-});
